@@ -1,10 +1,19 @@
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("CorsPolicy", policy =>
+    {
+        policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+    });
+});
+
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseSqlite("Data Source = matchingengine.db");
 });
+
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<StockService>();
 builder.Services.AddScoped<TransactionService>();
@@ -24,7 +33,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseRouting();
-
+app.UseCors("CorsPolicy");
 app.UseAuthorization();
 
 app.UseEndpoints(endpoints =>
