@@ -48,12 +48,24 @@
             seller.Balance = Math.Round(seller.Balance, 2);
             var buyerStockBalance = await t3;
             var sellerStockBalance = await t4;
+            if (buyerStockBalance is null)
+            {
+                buyerStockBalance = new()
+                {
+                    StockId = stockId,
+                    OwnerId = buyer.Id,
+                    Quantity = 0
+                };
+                dbContext.Add(buyerStockBalance);
+                await dbContext.SaveChangesAsync();
+            }
             buyerStockBalance.Quantity += quantity;
             sellerStockBalance.Quantity -= quantity;
             dbContext.UserStocks.Update(buyerStockBalance);
             dbContext.UserStocks.Update(sellerStockBalance);
             dbContext.Users.Update(buyer);
             dbContext.Users.Update(seller);
+            await dbContext.AddAsync(transaction);
             await dbContext.SaveChangesAsync();
             return new();
         }
