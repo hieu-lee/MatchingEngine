@@ -10,6 +10,7 @@
             this.transactionService = transactionService;
         }
 
+
         async Task<Result> CheckOrder(Order order)
         {
             if (order is null || order.Quantity == 0)
@@ -183,6 +184,11 @@
                     await Clients.All.SendAsync("ReceiveBuyOrder", order);
                 }
             }
+        }
+
+        public async Task GetOrderBook()
+        {
+            await Clients.Client(Context.ConnectionId).SendAsync("SendOrderBook", (OrderService.BuyOrders, OrderService.SellOrders));
         }
     }
 }

@@ -46,6 +46,36 @@
             return new();
         }
 
+        public async Task<Result> AddStockToUserAsync(string stockId, string userId)
+        {
+            var stock = await dbContext.Stocks.Where(s => s.Id == stockId).FirstOrDefaultAsync();
+            var user = await dbContext.Users.Where(S => S.Id == userId).FirstOrDefaultAsync();
+            if (stock is null)
+            {
+                return new("Stock doesn't exist");
+            }
+            if (user is null)
+            {
+                return new("User doesn't exist");
+            }
+            var id = userId + stockId;
+            var UserStock = await dbContext.UserStocks.Where(s => s.Id == id).FirstOrDefaultAsync();
+            if (UserStock is not null)
+            {
+                UserStock.Quantity++;
+                dbContext.Update(UserStock);
+                await dbContext.SaveChangesAsync();
+                return new();
+            }
+            else
+            {
+                UserStock = new() { Id = id, OwnerId = userId, StockId = stockId, Quantity = 1 };
+                await dbContext.AddAsync(UserStock);
+                await dbContext.SaveChangesAsync();
+                return new();
+            }
+        }
+
         public async Task<Result> DeleteStockAsync(string id)
         {
             var tmp = await dbContext.Stocks.Where(s => s.Id == id).FirstOrDefaultAsync();

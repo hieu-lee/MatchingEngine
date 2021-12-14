@@ -27,9 +27,10 @@
             return (res is null) ? NotFound() : Ok(res);
         }
 
-        [HttpPost("create")]
+        [HttpPost("create-user")]
         public async Task<IActionResult> CreateUserAsync([FromBody] User user)
         {
+            Console.WriteLine("POPOP");
             var res = await userService.CreateUserAsync(user);
             return res.Success ? Ok() : BadRequest(res.ErrorMessage);
         }

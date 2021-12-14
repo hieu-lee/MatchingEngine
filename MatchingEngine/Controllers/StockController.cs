@@ -40,6 +40,13 @@
             return (res.Success) ? Ok() : BadRequest(res.ErrorMessage);
         }
 
+        [HttpPost("add-user-stock/{stockId}")]
+        public async Task<IActionResult> AddStockToUserAsync(string stockId, [FromBody] string userId)
+        {
+            var res = await stockService.AddStockToUserAsync(stockId, userId);
+            return (res.Success) ? Ok() : NotFound(res.ErrorMessage);
+        }
+
         [HttpDelete("delete/{id}")]
         public async Task<IActionResult> DeleteStockAsync(string id)
         {

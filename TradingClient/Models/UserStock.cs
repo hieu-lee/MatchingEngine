@@ -1,12 +1,9 @@
-﻿namespace MatchingEngine.Models
+﻿namespace TradingClient.Models
 {
     public class UserStock
     {
-        [Key]
-        public string Id { get; set; }
-        [ForeignKey("Owner")]
+        public string Id => OwnerId + StockId;
         public string OwnerId { get; set; }
-        [ForeignKey("Stock")]
         public string StockId { get; set; }
         public uint Quantity { get; set; } = 0;
         public User Owner { get; set; }

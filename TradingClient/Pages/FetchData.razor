@@ -1,8 +1,56 @@
 ﻿@page "/fetchdata"
-@inject HttpClient Http
+@inject StockService stockService
 
 <PageTitle>Weather forecast</PageTitle>
 
-<h1>Weather forecast</h1>
+<h1>Welcome to Trading Client</h1>
 
-<p>This component demonstrates fetching data from the server.</p>
+<input @bind-value="NewStockId"/>
+
+<button class="btn btn-success" @onclick="async () => { await AddNewStock(); }">Add New</button>
+
+<ul>
+    @foreach (var stock in stocks)
+    {
+        <li>
+            <h5>@stock.Id</h5>
+            <button class="btn btnbtn-secondary" disabled="@NotSignIn" @onclick="async () => { await AddUserStock(stock.Id); }">Add Stock</button>
+        </li>
+    }
+</ul>
+
+
+
+@code {
+    string NewStockId;
+    List<Stock> stocks = new();
+    bool NotSignIn => (SessionData.CurrentUser is null);
+
+    protected override async Task OnInitializedAsync()
+    {
+        stocks = await stockService.GetAllStocksAsync();
+    }
+
+    async Task AddNewStock()
+    {
+        var newStock = new Stock()
+        {
+            Id = NewStockId
+        };
+        try
+        {
+            await stockService.AddStockAsync(newStock);
+            stocks.Add(newStock);
+            NewStockId = string.Empty;
+        }
+        catch(Exception)
+        {
+            NewStockId = string.Empty;
+        }
+    }
+
+    async Task AddUserStock(string stockId)
+    {
+        await stockService.AddStockToUserAsync(stockId, SessionData.UserId);
+    }
+}
