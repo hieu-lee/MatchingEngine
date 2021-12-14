@@ -32,6 +32,11 @@
             return null;
         }
 
+        public async Task<List<UserStock>> GetStockOfUser(string userId)
+        {
+            return await dbContext.UserStocks.Where(s => s.OwnerId == userId).ToListAsync();
+        }
+
         public async Task<Result> AddStockAsync(Stock stock)
         {
             var tmp = await dbContext.Stocks.Where(s => s.Id == stock.Id).FirstOrDefaultAsync();

@@ -33,6 +33,12 @@
             return (res is null) ? NotFound() : Ok(res);
         }
 
+        [HttpGet("get-user-stock/{userId}")]
+        public async Task<IActionResult> GetStockOfUserAsync(string userId)
+        {
+            return Ok(await stockService.GetStockOfUser(userId));
+        }
+
         [HttpPost("create")]
         public async Task<IActionResult> AddStockAsync([FromBody] Stock stock)
         {

@@ -15,6 +15,8 @@
 
         public async Task<OrderBook> GetStockOrderBook(string id) => await _httpClient.GetFromJsonAsync<OrderBook>($"api/Stock/get-order-book/{id}");
 
+        public async Task<List<UserStock>> GetStockOfUSerAsync(string userId) => await _httpClient.GetFromJsonAsync<List<UserStock>>($"api/Stock/get-user-stock/{userId}");
+
         public async Task AddStockAsync(Stock stock)
         {
             await _httpClient.PostAsJsonAsync("api/Stock/create", stock);
